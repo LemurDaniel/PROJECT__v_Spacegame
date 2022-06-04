@@ -1,152 +1,110 @@
 module main
 
+import term
 import gg
 import gx
-import math
-
-enum Shape {
-	tri
-	rect
-	poly
-}
-
-
-struct DrawComponent {
-mut:
-	name     string
-	shape    Shape 
-	color    gx.Color   
-	points   []&Vector 
-}
-
-fn (mut component DrawComponent) draw(ctx gg.Context, rot int, x int, y int) {
-
-	points := component.transform(rot, x, y)
-
-	if component.shape == Shape.tri {
-		ctx.draw_triangle_empty(
-			points[0],
-			points[1],
-			points[2],
-			points[3],
-			points[4],
-			points[5],
-			component.color
-		)
-	}
-	else if component.shape == Shape.poly {
-		ctx.draw_poly_empty(points, component.color)
-	}
-	
-
-}
-
-fn (mut component DrawComponent) transform(angle int, x int, y int) []f32 {
-
-	mut points := []f32{
-		len: component.points.len * 2, 
-		init: 0
-	}
-
-	rad := math.radians(angle)
-
-	mut index := 0
-	for point in component.points {
-        sin := math.sin(rad)
-        cos := math.cos(rad)
-
-		rot_x := point.x * cos - point.y * sin
-		rot_y := point.x * sin + point.y * cos
-		
-		points[index]   = int(rot_x) + x
-		points[index+1] = int(rot_y) + y
-		index += 2
-	}
-
-	return points
-}
-
-
-
-
 
 struct Spaceship {
 mut:
 	rot			int
 	pos			&Vector  = 0
 	speed		&Vector  = 0
-	color   	gx.Color
 	components 	[]&DrawComponent
 }
 
-
 fn (mut ship Spaceship) init() {
-	ship.color 		= gx.black
+	ship.speed 		= &Vector{1, 1}
 	ship.pos 		= &Vector{75, 175}
-	ship.rot 		= 32
-	ship.components = []&DrawComponent
+	ship.rot 		= 0
+	ship.components = []&DrawComponent{}
+	
+	color := gx.black
 
 	ship.components << &DrawComponent{
 		name: "Shiphull"
-		color: ship.color
-		shape: Shape.tri
+		color: color
+		kind:  Kind.empty
 		points: [
-			&Vector{20,0}
-			&Vector{-20,20}
-			&Vector{-20,-20}
+			[20,0]
+			[-20,20]
+			[-20,-20]
 		]
 	}
 
 	ship.components << &DrawComponent{
 		name: "Laser"
-		color: ship.color
-		shape: Shape.poly
+		color: gx.cyan
+		kind:  Kind.filled
 		points: [
-			&Vector{18,-1}
-			&Vector{30,-1}
-			&Vector{30,1}
-			&Vector{18,1}
+			[18,-1]
+			[18,1]
+			[30,1]
+			[30,-1]
 		]
+	
 	}
 
 	ship.components << &DrawComponent{
 		name: "Thruster left"
-		color: ship.color
-		shape: Shape.poly
+		color: gx.dark_gray 
+		kind:  Kind.filled
 		points: [
-			&Vector{-20,-5}
-			&Vector{-20,-14}
-			&Vector{-30,-14}
-			&Vector{-30,-5}
+			[-20,-14]
+			[-20,-5]
+			[-30,-5]
+			[-30,-14]
 		]
 	}
 
 	ship.components << &DrawComponent{
 		name: "Thruster right"
-		color: ship.color
-		shape: Shape.poly
+		color: gx.dark_gray 
+		kind:  Kind.filled
 		points: [
-			&Vector{-20,5}
-			&Vector{-20,14}
-			&Vector{-30,14}
-			&Vector{-30,5}
+			[-20,14]
+			[-20,5]
+			[-30,5]
+			[-30,14]
 		]
+	}
+
+
+}
+
+fn (mut ship Spaceship) bounds(bound_x int, bound_y int, offset int) {
+	if ship.pos.x > bound_x + offset {
+		ship.pos.x = 0 - offset + 5
+	}
+	if ship.pos.y > bound_y + offset {
+		ship.pos.y = 0 - offset + 5
+	}
+	if ship.pos.x < 0 - offset {
+		ship.pos.x = 0 + offset - 5
+	}
+	if ship.pos.y < 0 - offset {
+		ship.pos.y = 0 + offset - 5
 	}
 }
 
+fn (mut ship Spaceship) move() {
+	ship.pos.add(ship.speed)
+}
+
 fn (mut ship Spaceship) draw(ctx gg.Context) {
+	ship.move()
+	ship.bounds(544, 544, 50)
 
-	x := ship.pos.x
+	rot := ship.speed.heading()
+	x := ship.pos.x 
 	y := ship.pos.y
-	color := ship.color
 
-	ctx.draw_text(40, 90, ship.components[1].str())
-
-	ctx.draw_text(x -28, y, "Test2")
+	pos := term.get_cursor_position() or { term.Coord{-4,0} }
+	ctx.draw_text(40, 90, pos.str())
 
 	for mut component in ship.components {
-		component.draw(ctx, ship.rot, ship.pos.x, ship.pos.y)
+		component.draw(ctx, rot, ship.pos.x, ship.pos.y)
 	}
+
 
 
 }

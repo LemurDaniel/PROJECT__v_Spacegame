@@ -41,6 +41,25 @@ fn (mut vector Vector) mul(vector2 Vector) Vector {
 	return vector
 }
 
+fn (mut vector Vector) heading() f64 {
+    tau := math.tau * 2
+
+    if vector.x == 0 && vector.y > 0 {
+        return math.pi / 2
+    }
+    if vector.x == 0 && vector.y <= 0 {
+        return math.pi * 3 / 2
+    }
+    if vector.x > 0 {
+        return math.fmod(tau + math.atan(vector.y / vector.x), tau)
+    }
+    if vector.x < 0 {
+        return math.pi + math.atan(vector.y / vector.x)
+    }
+
+    return -1.0
+}
+
 /*
     _round() {}
 
@@ -56,19 +75,7 @@ fn (mut vector Vector) mul(vector2 Vector) Vector {
         return this;
     }
 
-    heading() {
-        const TAU = Math.PI * 2;
 
-        if (this.x === 0)
-            return this.y > 0 ? (Math.PI / 2) : (Math.PI * 3 / 2);
-
-        if (this.x > 0)
-            return (TAU + Math.atan(this.y / this.x)) % TAU;
-
-        if (this.x < 0)
-            return Math.PI + Math.atan(this.y / this.x);
-
-    }
 
     add(vec) {}
 

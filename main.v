@@ -2,7 +2,6 @@ module main
 
 import gg
 
-
 fn frame(mut app App) {
 	app.gg.begin()
 	app.draw(app.gg)
