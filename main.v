@@ -2,11 +2,22 @@ module main
 
 import gg
 
+
+fn frame(mut app App) {
+	app.gg.begin()
+	app.draw(app.gg)
+	app.gg.end()
+}
+
+fn init(mut app App) {
+	app.init()
+}
+
 fn main() {
 
-	mut canvas := &Canvas{}
+	mut app := &App{}
 
-	canvas.gg = gg.new_context(
+	app.gg = gg.new_context(
 		bg_color: default_background
 		width: default_window_width
 		height: default_window_height
@@ -14,10 +25,11 @@ fn main() {
 		create_window: true
 		window_title: window_title
 		frame_fn: frame
+		user_data: app
 		//event_fn: on_event
-		//init_fn: init
+		init_fn: init
 	)
 
-	canvas.gg.run()
+	app.gg.run()
 
 }
