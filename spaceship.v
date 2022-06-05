@@ -10,6 +10,8 @@ mut:
 	damp 		f32
 	trsh		f32
 	thrust 		f32
+	size 		int
+	limit		int
 	pos			&Vector  = 0
 	speed		&Vector  = 0
 	components 	[]&DrawComponent
@@ -19,9 +21,11 @@ fn (mut obj GameObject) init() {
 	obj.speed 		= &Vector{1, 1}
 	obj.pos 		= &Vector{75, 175}
 	obj.rot 		= 0
-	obj.damp 		= 0.035
+	obj.limit 		= 4
+	obj.damp 		= 0.015
 	obj.trsh		= 0.05
-	obj.thrust		= 0.2
+	obj.thrust		= 0.4
+	obj.size 		= 50
 	obj.components  = []&DrawComponent{}
 	
 	color := gx.black
@@ -77,23 +81,27 @@ fn (mut obj GameObject) init() {
 
 }
 
-fn (mut obj GameObject) bounds(bound_x int, bound_y int, offset int) {
-	if obj.pos.x > bound_x + offset {
-		obj.pos.x = 0 - offset + 5
+fn (mut obj GameObject) bounds(bound_x int, bound_y int) {
+	if obj.pos.x > bound_x + obj.size {
+		obj.pos.x = 0 - obj.size + 5
 	}
-	if obj.pos.y > bound_y + offset {
-		obj.pos.y = 0 - offset + 5
+	if obj.pos.y > bound_y + obj.size {
+		obj.pos.y = 0 - obj.size + 5
 	}
-	if obj.pos.x < 0 - offset {
-		obj.pos.x = 0 + offset - 5
+	if obj.pos.x < 0 - obj.size {
+		obj.pos.x = 0 + obj.size - 5
 	}
-	if obj.pos.y < 0 - offset {
-		obj.pos.y = 0 + offset - 5
+	if obj.pos.y < 0 - obj.size {
+		obj.pos.y = 0 + obj.size - 5
 	}
 }
 
-fn (mut obj GameObject) move() {
+fn (mut obj GameObject) move(bounds &Vector) {
 	obj.pos.add(obj.speed)
+	obj.bounds(
+		int(bounds.x), 
+		int(bounds.y)
+		)
 
 	if obj.speed.x > obj.trsh {
 		obj.speed.x -= obj.damp
@@ -121,15 +129,15 @@ fn (mut obj GameObject) turn(rad f32) {
 }
 
 fn (mut obj GameObject) thrust() {
-	// TODO set correct heading and magnitude on acc.
-	// TODO set limit to thrusts.
-	acc := &Vector{obj.thrust, obj.thrust}
+	mut acc := &Vector{0,0}
+	acc.set(obj.rot, obj.thrust)
+
 	obj.speed.add(acc)
+	obj.speed.limit(obj.limit)
 }
 
-fn (mut obj GameObject) draw(ctx gg.Context) {
-	obj.move()
-	obj.bounds(544, 544, 50)
+fn (mut obj GameObject) draw(ctx gg.Context, bounds &Vector) {
+	obj.move(bounds)
 
 	x := obj.pos.x 
 	y := obj.pos.y

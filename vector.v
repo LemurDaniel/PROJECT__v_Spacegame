@@ -9,12 +9,27 @@ mut:
 	y 	f32
 }
 
-fn (mut vector Vector) round() {
+fn (mut vector Vector) set(rad f32, mag f32) Vector {
+    vector.x = f32(math.cos(rad) * mag)
+    vector.y = f32(math.sin(rad) * mag)
+    return vector
+}
 
+fn (mut vector Vector) limit(limit f32) {
+    if vector.mag() > limit  {
+        vector.set_mag(limit)
+    }
 }
 
 fn (mut vector Vector) mag() f64 {
 	return math.sqrt(vector.x * vector.x + vector.y * vector.y)
+}
+
+fn (mut vector Vector) set_mag(mag f64) Vector{
+    angle := vector.heading()
+    vector.x = f32(math.cos(angle) * mag)
+    vector.y = f32(math.sin(angle) * mag)
+    return vector
 }
 
 fn (mut vector Vector) dist(vector2 Vector) f64 {
@@ -67,13 +82,7 @@ fn (mut vector Vector) heading() f64 {
 
     limit(limit) {}
 
-    setMag(mag) {
-        const angle = this.heading();
-        this.x = Math.cos(angle) * mag;
-        this.y = Math.sin(angle) * mag;
-        this._round();
-        return this;
-    }
+
 
 
 

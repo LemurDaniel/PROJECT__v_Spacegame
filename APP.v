@@ -7,15 +7,20 @@ import gx
 struct App {
 mut:
     gg         &gg.Context = 0
-    spaceship  GameObject = &GameObject{}
+	bounds	   &Vector 	   = 0
+    spaceship  GameObject  = &GameObject{}
 }
 
 fn (mut app App) init() {
     app.spaceship.init()
+	app.resize()
 }
 
 fn (mut app App)  on_event(e &gg.Event) {
     match e.typ {
+		.resized {
+			app.resize()
+		}
         .key_down  {
 			match e.key_code {
 				.w {
@@ -38,6 +43,14 @@ fn (mut app App)  on_event(e &gg.Event) {
 
 }
 
+fn (mut app App) resize() {
+	window_size := app.gg.window_size()
+	app.bounds = &Vector{
+		window_size.width,
+	    window_size.height
+	}
+}
+
 fn (mut app App) draw(ctx gg.Context) {
 
     mut vector := &Vector{20,20}
@@ -51,5 +64,5 @@ fn (mut app App) draw(ctx gg.Context) {
     ctx.draw_text(20, 50, str2)
     ctx.draw_text(20, 70, str3)
 
-    app.spaceship.draw(ctx)
+    app.spaceship.draw(ctx, app.bounds)
 }
