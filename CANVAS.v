@@ -19,7 +19,7 @@ mut:
 	points   [][]int
 }
 
-fn (mut component DrawComponent) draw(ctx gg.Context, rot f64, x int, y int) {
+fn (mut component DrawComponent) draw(ctx gg.Context, rot f32, x f32, y f32) {
 
 	points := component.transform(rot, x, y)
 
@@ -32,7 +32,7 @@ fn (mut component DrawComponent) draw(ctx gg.Context, rot f64, x int, y int) {
 	
 }
 
-fn (mut component DrawComponent) transform(rad f64, x int, y int) []f32 {
+fn (mut component DrawComponent) transform(rad f32, x f32, y f32) []f32 {
 
 	mut points := []f32{
 		len: component.points.len * 2 +2, 

@@ -12,6 +12,10 @@ fn init(mut app App) {
 	app.init()
 }
 
+fn on_event(e &gg.Event, mut app App) {
+	app.on_event(e)
+}
+
 fn main() {
 
 	mut app := &App{}
@@ -25,7 +29,7 @@ fn main() {
 		window_title: window_title
 		frame_fn: frame
 		user_data: app
-		//event_fn: on_event
+		event_fn: on_event
 		init_fn: init
 	)
 

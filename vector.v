@@ -5,8 +5,8 @@ import math
 
 struct Vector {
 mut: 
-	x	int
-	y 	int
+	x	f32
+	y 	f32
 }
 
 fn (mut vector Vector) round() {
