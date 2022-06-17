@@ -4,33 +4,29 @@ import gg
 import gx
 import math
 
-struct GameObject {
+struct Spaceship {
 mut:
-	rot			f32
-	damp 		f32
-	trsh		f32
+	base        &GameObject = 0
 	thrust 		f32
-	size 		int
-	limit		int
-	pos			&Vector  = 0
-	speed		&Vector  = 0
-	components 	[]&DrawComponent
 }
 
-fn (mut obj GameObject) init() {
-	obj.speed 		= &Vector{1, 1}
-	obj.pos 		= &Vector{75, 175}
-	obj.rot 		= 0
-	obj.limit 		= 4
-	obj.damp 		= 0.015
-	obj.trsh		= 0.05
-	obj.thrust		= 0.4
-	obj.size 		= 50
-	obj.components  = []&DrawComponent{}
+fn (mut ship Spaceship) init() {
+	ship.thrust		= 0.4
+
+	ship.base           = &GameObject{}
+	ship.base.speed     = &Vector{1, 1}
+	ship.base.pos 		= &Vector{75, 175}
+	ship.base.rot 		= 0
+	ship.base.limit 		= 4
+	ship.base.damp 		= 0.015
+	ship.base.trsh		= 0.05
+
+	ship.base.size 		= 50
+	ship.base.components  = []&DrawComponent{}
 	
 	color := gx.black
 
-	obj.components << &DrawComponent{
+	ship.base.components << &DrawComponent{
 		name: "Shiphull"
 		color: color
 		kind:  Kind.empty
@@ -41,7 +37,7 @@ fn (mut obj GameObject) init() {
 		]
 	}
 
-	obj.components << &DrawComponent{
+	ship.base.components << &DrawComponent{
 		name: "Laser"
 		color: gx.cyan
 		kind:  Kind.filled
@@ -54,7 +50,7 @@ fn (mut obj GameObject) init() {
 	
 	}
 
-	obj.components << &DrawComponent{
+	ship.base.components << &DrawComponent{
 		name: "Thruster left"
 		color: gx.dark_gray 
 		kind:  Kind.filled
@@ -66,7 +62,7 @@ fn (mut obj GameObject) init() {
 		]
 	}
 
-	obj.components << &DrawComponent{
+	ship.base.components << &DrawComponent{
 		name: "Thruster right"
 		color: gx.dark_gray 
 		kind:  Kind.filled
@@ -81,72 +77,14 @@ fn (mut obj GameObject) init() {
 
 }
 
-fn (mut obj GameObject) bounds(bound_x int, bound_y int) {
-	if obj.pos.x > bound_x + obj.size {
-		obj.pos.x = 0 - obj.size + 5
-	}
-	if obj.pos.y > bound_y + obj.size {
-		obj.pos.y = 0 - obj.size + 5
-	}
-	if obj.pos.x < 0 - obj.size {
-		obj.pos.x = 0 + obj.size - 5
-	}
-	if obj.pos.y < 0 - obj.size {
-		obj.pos.y = 0 + obj.size - 5
-	}
+fn (mut ship Spaceship) turn(rad f32) {
+	ship.base.rot += f32(math.radians(rad))
 }
 
-fn (mut obj GameObject) move(bounds &Vector) {
-	obj.pos.add(obj.speed)
-	obj.bounds(
-		int(bounds.x), 
-		int(bounds.y)
-		)
-
-	if obj.speed.x > obj.trsh {
-		obj.speed.x -= obj.damp
-	} 
-	else if obj.speed.x < -obj.trsh {
-		obj.speed.x += obj.damp
-	}
-	else {
-		obj.speed.x = 0
-	}
-
-	if obj.speed.y > obj.trsh {
-		obj.speed.y -= obj.damp
-	}
-	else if obj.speed.y < -obj.trsh {
-		obj.speed.y += obj.damp
-	}
-	else {
-		obj.speed.y = 0
-	}
-}
-
-fn (mut obj GameObject) turn(rad f32) {
-	obj.rot += f32(math.radians(rad))
-}
-
-fn (mut obj GameObject) thrust() {
+fn (mut ship Spaceship) thrust() {
 	mut acc := &Vector{0,0}
-	acc.set(obj.rot, obj.thrust)
+	acc.set(ship.base.rot, ship.thrust)
 
-	obj.speed.add(acc)
-	obj.speed.limit(obj.limit)
-}
-
-fn (mut obj GameObject) draw(ctx gg.Context, bounds &Vector) {
-	obj.move(bounds)
-
-	x := obj.pos.x 
-	y := obj.pos.y
-	ctx.draw_text(20, 100, obj.damp.str())
-	ctx.draw_text(20, 120, obj.speed.str())
-	for mut component in obj.components {
-		component.draw(ctx, obj.rot, obj.pos.x, obj.pos.y)
-	}
-
-	
-
+	ship.base.speed.add(acc)
+	ship.base.speed.limit(ship.base.limit)
 }

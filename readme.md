@@ -1,0 +1,1 @@
+Code inspired and oriented on: https://github.com/ali-furkan/minesweeper-v

@@ -8,40 +8,16 @@ struct App {
 mut:
     gg         &gg.Context = 0
 	bounds	   &Vector 	   = 0
-    spaceship  GameObject  = &GameObject{}
+    spaceship  &Spaceship   = &Spaceship{}
+	asteroids  &Asteroidmanager = &Asteroidmanager{}
 }
 
 fn (mut app App) init() {
     app.spaceship.init()
+	app.asteroids.init()
 	app.resize()
 }
 
-fn (mut app App)  on_event(e &gg.Event) {
-    match e.typ {
-		.resized {
-			app.resize()
-		}
-        .key_down  {
-			match e.key_code {
-				.w {
-					app.spaceship.thrust()
-				}
-				.a {
-					app.spaceship.turn(-5.0)
-				}
-                .d {
-					app.spaceship.turn(5.0)
-				}
-                .s {
-					//app.handle_click_mode()
-				}
-				else {}
-			}
-		}
-        else {}
-    }
-
-}
 
 fn (mut app App) resize() {
 	window_size := app.gg.window_size()
@@ -64,5 +40,8 @@ fn (mut app App) draw(ctx gg.Context) {
     ctx.draw_text(20, 50, str2)
     ctx.draw_text(20, 70, str3)
 
-    app.spaceship.draw(ctx, app.bounds)
+	app.asteroids.draw(ctx, app.bounds)
+    app.spaceship.base.draw(ctx, app.bounds)
+
+	ctx.draw_text(20, 170, app.asteroids.asteroids[0].base.components[0].pointsf32.str())
 }
