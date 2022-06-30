@@ -1,7 +1,6 @@
 module main
 
 import gg
-import gx
 
 
 struct App {
@@ -27,21 +26,21 @@ fn (mut app App) resize() {
 	}
 }
 
-fn (mut app App) draw(ctx gg.Context) {
+fn (mut app App) game_loop(ctx gg.Context) {
 
-    mut vector := &Vector{20,20}
-	mut vector2 := &Vector{30,30}
+	app.asteroids.move(app.bounds)
+    app.spaceship.move(app.bounds)
+
+	app.asteroids.draw(ctx)
+    app.spaceship.draw(ctx)
 	
-	str := "Sub: " + vector.sub(vector2).str()
-    str2 := "Dist: " + vector.dist(vector2).str()
-    str3 := "Mag: " + vector.mag().str()
+	ctx.draw_text(20, 100, app.spaceship.base.pos.str())
+}
 
-    ctx.draw_text(20, 20, str)
-    ctx.draw_text(20, 50, str2)
-    ctx.draw_text(20, 70, str3)
 
-	app.asteroids.draw(ctx, app.bounds)
-    app.spaceship.base.draw(ctx, app.bounds)
+fn (mut app App) collision_check() {
 
-	ctx.draw_text(20, 170, app.asteroids.asteroids[0].base.components[0].pointsf32.str())
+
+
+
 }

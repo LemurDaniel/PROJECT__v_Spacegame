@@ -2,7 +2,13 @@ module main
 
 import gg
 import gx
-import math
+
+const (
+	window_title          = 'V Spaceship Game'
+	default_window_width  = 544
+	default_window_height = 560
+	default_background    = gx.rgb(0, 0, 0)
+)
 
 
 fn (mut app App)  on_event(e &gg.Event) {
@@ -21,8 +27,8 @@ fn (mut app App)  on_event(e &gg.Event) {
                 .d {
 					app.spaceship.turn(5.0)
 				}
-                .s {
-					//app.handle_click_mode()
+                .f {
+					app.spaceship.shoot()
 				}
 				else {}
 			}

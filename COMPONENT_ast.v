@@ -26,7 +26,7 @@ fn (mut ast Asteroid) init(verts int, r f32, random f32) {
 	
 
 
-	color := gx.black
+	color := gx.light_gray 
 
 	mut points := [][]f32{
 		len: verts,
@@ -83,11 +83,17 @@ fn (mut mgm Asteroidmanager) init() {
 
 }
 
-
-fn (mut mgm Asteroidmanager)  draw(ctx gg.Context, bounds &Vector) {
+fn (mut mgm Asteroidmanager)  move(bounds &Vector) {
 
 	for mut ast in mgm.asteroids {
-		ast.base.draw(ctx, bounds)
+		ast.base.move(bounds)
+	}
+}
+
+fn (mut mgm Asteroidmanager)  draw(ctx gg.Context) {
+
+	for mut ast in mgm.asteroids {
+		ast.base.draw(ctx)
 	}
 }
 

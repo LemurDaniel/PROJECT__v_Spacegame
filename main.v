@@ -4,7 +4,7 @@ import gg
 
 fn frame(mut app App) {
 	app.gg.begin()
-	app.draw(app.gg)
+	app.game_loop(app.gg)
 	app.gg.end()
 }
 
