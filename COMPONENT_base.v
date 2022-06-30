@@ -104,7 +104,10 @@ mut:
 	on_wrap_bound fn (obj &GameObject)  
 	 = fn(obj &GameObject) { }
 
-	on_collision fn (obj1 &GameObject, obj2 &GameObject) int
+	on_collision fn (mut self &GameObject, mut obj &GameObject) = 
+		fn (mut self &GameObject, mut obj &GameObject) {
+			self.active = false
+		}
 }
 
 

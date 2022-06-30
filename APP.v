@@ -28,11 +28,24 @@ fn (mut app App) resize() {
 
 fn (mut app App) game_loop(ctx gg.Context) {
 
-	app.asteroids.move(app.bounds)
-    app.spaceship.move(app.bounds)
+	mut spaceship := app.spaceship
+	mut asteroids := app.asteroids
 
-	app.asteroids.draw(ctx)
-    app.spaceship.draw(ctx)
+	asteroids.move(app.bounds)
+    spaceship.move(app.bounds)
+
+
+	if asteroids.calculate_collision(spaceship.base) {
+		spaceship.on_collision()
+	}
+
+	for laser in spaceship.lasers {
+		asteroids.calculate_collision(laser)
+	}
+
+
+	asteroids.draw(ctx)
+    spaceship.draw(ctx)
 	
 	ctx.draw_text(20, 100, app.spaceship.base.pos.str())
 }
@@ -40,7 +53,9 @@ fn (mut app App) game_loop(ctx gg.Context) {
 
 fn (mut app App) collision_check() {
 
+	for ast in app.asteroids.asteroids {
 
+	}
 
 
 }

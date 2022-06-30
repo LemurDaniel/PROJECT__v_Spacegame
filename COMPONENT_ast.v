@@ -22,6 +22,7 @@ fn (mut ast Asteroid) init(verts int, r f32, random f32) {
 
 		size 		: 50
 		components  : []&DrawComponent{}
+
 	}
 	
 
@@ -61,6 +62,8 @@ fn (mut ast Asteroid) init(verts int, r f32, random f32) {
 struct Asteroidmanager {
 mut:
 	asteroids        []Asteroid    = []
+	ast_ptr			 int
+
 	vertice_count    int           = 12
 	radius           f32           = 8
 	random           f32           = 0.2
@@ -81,6 +84,8 @@ fn (mut mgm Asteroidmanager) init() {
 	ast.base.pos.y = 240
 	mgm.asteroids << ast
 
+	mgm.ast_ptr = 2
+
 }
 
 fn (mut mgm Asteroidmanager)  move(bounds &Vector) {
@@ -88,12 +93,51 @@ fn (mut mgm Asteroidmanager)  move(bounds &Vector) {
 	for mut ast in mgm.asteroids {
 		ast.base.move(bounds)
 	}
+
+	mut i := 0
+	for i < mgm.ast_ptr {
+		mgm.asteroids[i].base.move(bounds)
+
+		if !mgm.asteroids[i].base.active {
+			mgm.ast_ptr--
+			mgm.asteroids[i] = mgm.asteroids[mgm.ast_ptr]
+		} 
+		else {
+			i++
+		}
+	}
 }
 
 fn (mut mgm Asteroidmanager)  draw(ctx gg.Context) {
 
 	for mut ast in mgm.asteroids {
-		ast.base.draw(ctx)
+		if ast.base.active {
+			ast.base.draw(ctx)
+		}
 	}
 }
 
+
+fn (mut mgm Asteroidmanager) calculate_collision(obj &GameObject) bool {
+
+	if !obj.active {
+		return false
+	}
+
+	for mut ast in mgm.asteroids {
+
+		if !ast.base.active {
+			continue
+		}
+
+		dist := ast.base.pos.dist(obj.pos)
+		if dist <= ast.base.size + obj.size {
+			ast.base.on_collision(ast.base, obj)
+			obj.on_collision(obj, ast.base)
+			return true
+		}
+
+	}
+
+	return false
+}

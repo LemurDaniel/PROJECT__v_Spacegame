@@ -18,6 +18,13 @@ mut:
 	laser_thrust 	   int = 10
 	max_laser_parallel int = 50
 	min_laser_cooldown int = 15
+
+}
+
+fn (mut ship Spaceship) on_collision() {
+	if ship.lives.len > 0 {
+		ship.lives.pop()
+	}
 }
 
 fn (mut ship Spaceship) move(bounds &Vector) {
@@ -77,6 +84,12 @@ fn (mut ship Spaceship) shoot() {
 
 	ship.lasers[ship.laser_ptr++] = &GameObject{
 
+		on_collision: fn (mut self &GameObject, mut obj &GameObject) {
+			self.active = false
+			self.pos.x = -1000
+			self.pos.y = -1000
+		}
+
 		on_wrap_bound: fn (mut obj &GameObject) {
 			obj.active = false
 			obj.pos.x = -1000
@@ -133,10 +146,13 @@ fn (mut ship Spaceship) init() {
 	ship.base.limit 	= 4
 	ship.base.damp 		= 0.015
 	ship.base.trsh		= 0.05
+	ship.base.size 		   = 25
 
-	ship.base.size 		= 50
+	ship.base.on_collision = 
+	fn (mut self &GameObject, mut obj &GameObject) {}
+
+
 	ship.base.components  = []&DrawComponent{}
-	
 	color := gx.white
 
 	ship.base.components << &DrawComponent{
