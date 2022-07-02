@@ -95,6 +95,7 @@ mut:
 	rot			f32
 	damp 		f32
 	trsh		f32
+	speed_ang   f32
 	scale    	f32  = f32(1.0)
 	active		bool = true
 	pos			&Vector  = &Vector{0, 0}
@@ -138,6 +139,7 @@ fn (mut obj GameObject) bounds(bound_x int, bound_y int) {
 
 fn (mut obj GameObject) move(bounds &Vector) {
 	obj.pos.add(obj.speed)
+	obj.rot += obj.speed_ang
 	obj.bounds(
 		int(bounds.x), 
 		int(bounds.y)
@@ -170,6 +172,6 @@ fn (mut obj GameObject) draw(ctx gg.Context) {
 		component.draw_layers(ctx, obj.layers, obj.rot, obj.scale, obj.pos.x, obj.pos.y)
 	}
 
-	ctx.draw_circle_empty(obj.pos.x, obj.pos.y, obj.size, gx.white)
+	// ctx.draw_circle_empty(obj.pos.x, obj.pos.y, obj.size, gx.white)
 
 }

@@ -135,15 +135,15 @@ fn (mut ship Spaceship) thrust() {
 	ship.base.speed.limit(ship.base.limit)
 }
 
-fn (mut ship Spaceship) init() {
+fn (mut ship Spaceship) init(bounds &Vector) {
 
 	ship.lasers        = []GameObject{len: ship.max_laser_parallel, init: &GameObject{active: false}}
 
 	ship.base           = &GameObject{}
 	ship.base.speed     = &Vector{0, 0}
 	ship.base.pos 		= &Vector{
-		int(default_window_width / 2), 
-		int(default_window_height / 2)
+		int(bounds.x / 2), 
+		int(bounds.y / 2)
 	}
 	ship.base.rot 		= 0
 	ship.base.limit 	= 4

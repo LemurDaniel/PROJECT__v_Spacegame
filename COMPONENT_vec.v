@@ -56,6 +56,12 @@ fn (mut vector Vector) mul(vector2 Vector) Vector {
 	return vector
 }
 
+fn (mut vector Vector) div(vector2 Vector) Vector {
+	vector.x /= vector2.x
+	vector.y /= vector2.y
+	return vector
+}
+
 fn (mut vector Vector) heading() f64 {
     tau := math.tau * 2
 

@@ -13,9 +13,9 @@ mut:
 }
 
 fn (mut app App) init() {
-    app.spaceship.init()
-	app.asteroids.init()
 	app.resize()
+    app.spaceship.init(app.bounds)
+	app.asteroids.init()
 }
 
 
@@ -45,7 +45,7 @@ fn (mut app App) game_loop(ctx gg.Context) {
 	for laser in spaceship.lasers {
 		points := asteroids.calculate_collision(laser)
 		if points > 0 {
-			app.score += points
+			app.score += points * 4
 		}
 	}
 
@@ -53,7 +53,8 @@ fn (mut app App) game_loop(ctx gg.Context) {
 	asteroids.draw(ctx)
     spaceship.draw(ctx)
 
-	ctx.draw_text(default_window_width-50, 20, "Score: " + app.score.str(), default_text_config)
-	ctx.draw_text(default_window_width/2, 20, "Asteroids: " + asteroids.ast_ptr.str() + "/" + asteroids.asteroids.len.str(), default_text_config)
-	ctx.draw_text(default_window_width/2, 40, "Next in: " + asteroids.cooldown.str(), default_text_config)
+
+	ctx.draw_text(int(app.bounds.x-50), 20, "Score: " + app.score.str(), default_text_config)
+	ctx.draw_text(int(app.bounds.x/2), 20, "Asteroids: " + asteroids.ast_ptr.str() + "/" + asteroids.asteroids.len.str(), default_text_config)
+	ctx.draw_text(int(app.bounds.x/2), 40, "Next in: " + asteroids.cooldown.str(), default_text_config)
 }

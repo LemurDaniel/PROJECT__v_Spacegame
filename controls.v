@@ -5,8 +5,8 @@ import gx
 
 const (
 	window_title           = 'V Spaceship Game'
-	default_window_width   = 544
-	default_window_height  = 560
+	default_window_width   = 1920
+	default_window_height  = 1080
 	default_background     = gx.rgb(0, 0, 0)
 	default_asteroid_count = 20
 	default_text_config    = gx.TextCfg{
@@ -20,7 +20,7 @@ const (
 
 fn (mut app App)  on_event(e &gg.Event) {
     match e.typ {
-		.resized {
+		.resized, .restored, .resumed {
 			app.resize()
 		}
         .key_down  {
