@@ -74,20 +74,3 @@ fn (mut vector Vector) heading() f64 {
 
     return -1.0
 }
-
-/*
-    _round() {}
-
-    copy() {}
-
-    limit(limit) {}
-
-
-
-
-
-    add(vec) {}
-
-
-    mul(vec, m) {}
-*/

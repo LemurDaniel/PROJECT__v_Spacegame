@@ -170,4 +170,6 @@ fn (mut obj GameObject) draw(ctx gg.Context) {
 		component.draw_layers(ctx, obj.layers, obj.rot, obj.scale, obj.pos.x, obj.pos.y)
 	}
 
+	ctx.draw_circle_empty(obj.pos.x, obj.pos.y, obj.size, gx.white)
+
 }

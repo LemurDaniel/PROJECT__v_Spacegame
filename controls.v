@@ -4,10 +4,17 @@ import gg
 import gx
 
 const (
-	window_title          = 'V Spaceship Game'
-	default_window_width  = 544
-	default_window_height = 560
-	default_background    = gx.rgb(0, 0, 0)
+	window_title           = 'V Spaceship Game'
+	default_window_width   = 544
+	default_window_height  = 560
+	default_background     = gx.rgb(0, 0, 0)
+	default_asteroid_count = 20
+	default_text_config    = gx.TextCfg{
+		color: gx.white
+		size: 20
+		align: .center
+		vertical_align: .middle
+	}
 )
 
 
